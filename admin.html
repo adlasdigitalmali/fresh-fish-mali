@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0c4260">
+<title>Administration | Fresh Fish Mali</title>
+<link rel="stylesheet" href="admin.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="config.js"></script><script defer src="admin.js"></script>
+</head>
+<body>
+<header class="admin-header">
+  <a href="index.html" class="brand"><span class="brand-mark">FF</span><span>FRESH FISH <b>MALI</b><small>GESTION DE LA POISSONNERIE</small></span></a>
+  <span class="header-label"><span class="live-dot"></span> ESPACE ADMINISTRATION</span>
+  <button id="logoutBtn" class="btn secondary hidden">Déconnexion</button>
+</header>
+<main class="wrap">
+<section id="setupNotice" class="panel notice hidden"><p class="eyebrow">CONFIGURATION</p><h1>Administration Fresh Fish Mali</h1><p>Renseignez l’URL et la clé publique de Supabase dans <code>config.js</code>.</p><a class="btn" href="https://supabase.com/dashboard" target="_blank" rel="noopener">Ouvrir Supabase ↗</a></section>
+<section id="loginPanel" class="login-card hidden"><div class="login-visual"><div class="brand-mark large">FF</div><p class="eyebrow">FRESH FISH MALI</p><h1>Votre activité, en un seul endroit.</h1><p>Gérez vos produits et suivez vos commandes depuis votre espace sécurisé.</p></div><div class="login-form-wrap"><p class="eyebrow">ESPACE SÉCURISÉ</p><h2>Connexion administrateur</h2><p class="muted">Connectez-vous avec votre compte autorisé.</p><form id="loginForm"><label>Adresse e-mail<input type="email" id="email" required autocomplete="username" placeholder="nom@exemple.com"></label><label>Mot de passe<input type="password" id="password" required autocomplete="current-password" placeholder="Votre mot de passe"></label><button class="btn full" type="submit">Se connecter <span>→</span></button><p id="loginError" class="error"></p></form></div></section>
+<section id="dashboard" class="hidden">
+  <div class="welcome"><div><p class="eyebrow">VOTRE ESPACE DE GESTION</p><h1>Tableau de bord</h1><p class="muted">Gardez un œil sur vos produits, vos stocks et vos commandes.</p></div><div class="account-chip"><span class="avatar">A</span><span><small>Connecté en tant que</small><b id="adminEmail"></b></span></div></div>
+  <div class="stats">
+    <article class="stat-card"><div class="stat-icon teal">P</div><div><span>Produits actifs</span><strong id="statProducts">—</strong><small>Références visibles en boutique</small></div></article>
+    <article class="stat-card"><div class="stat-icon blue">C</div><div><span>Commandes récentes</span><strong id="statOrders">—</strong><small>Dernières commandes reçues</small></div></article>
+    <article class="stat-card"><div class="stat-icon amber">!</div><div><span>Stocks faibles</span><strong id="statLowStock">—</strong><small>5 unités ou moins</small></div></article>
+  </div>
+  <div class="panel"><div class="panel-heading"><div><p class="eyebrow">CATALOGUE</p><h2>Ajouter un produit</h2><p class="muted">Complétez les informations puis enregistrez.</p></div><span class="section-number">01</span></div>
+    <form id="productForm" class="product-form">
+      <label>Nom du produit<input id="pName" required maxlength="120" placeholder="Ex. Capitaine entier"></label>
+      <label>Slug (identifiant URL)<input id="pSlug" required maxlength="140" placeholder="ex. capitaine-entier"></label>
+      <label>Catégorie<select id="pCategory"><option value="">Sans catégorie</option></select></label>
+      <label>Prix (FCFA)<input id="pPrice" type="number" min="0" step="1" required placeholder="Ex. 4500"></label>
+      <label>Unité<select id="pUnit"><option value="kg">Kilogramme (kg)</option><option value="carton">Carton</option><option value="lot">Lot</option><option value="piece">Pièce</option></select></label>
+      <label>Stock disponible<input id="pStock" type="number" min="0" step="0.001" value="0" required></label>
+      <label class="wide">Description<textarea id="pDescription" rows="3" placeholder="Origine, préparation, conseils…"></textarea></label>
+      <label class="wide">URL de l’image<input id="pImage" type="url" placeholder="https://… (facultatif)"></label>
+      <div class="form-footer wide"><p id="productMessage" class="message"></p><button class="btn" type="submit">＋ Enregistrer le produit</button></div>
+    </form>
+  </div>
+  <div class="panel"><div class="panel-heading"><div><p class="eyebrow">GESTION DU CATALOGUE</p><h2>Vos produits</h2><p class="muted">Modifiez le stock et le prix sans quitter le tableau de bord.</p></div><span class="section-number">02</span></div>
+    <div class="table-tools"><input id="productSearch" type="search" placeholder="Rechercher un produit…"><span id="productCount" class="muted"></span></div>
+    <div class="table-wrap"><table><thead><tr><th>Produit</th><th>Prix</th><th>Unité</th><th>Stock</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="productsTable"><tr><td colspan="6">Chargement…</td></tr></tbody></table></div>
+  </div>
+  <div class="panel"><div class="panel-heading"><div><p class="eyebrow">SUIVI COMMERCIAL</p><h2>Commandes récentes</h2><p class="muted">Aperçu des dernières commandes enregistrées.</p></div><span class="section-number">03</span></div><div class="table-wrap"><table><thead><tr><th>N°</th><th>Client</th><th>Total</th><th>Statut</th><th>Date</th></tr></thead><tbody id="ordersTable"><tr><td colspan="5">Chargement…</td></tr></tbody></table></div></div>
+</section>
+<p class="foot"><a href="index.html">← Retour à la boutique</a><span>Fresh Fish Mali · Administration</span></p>
+</main>
+<div id="drawerBackdrop" class="drawer-backdrop" aria-hidden="true"></div>
+<aside id="productDrawer" class="product-drawer" aria-hidden="true" aria-labelledby="drawerTitle">
+  <div class="drawer-header"><div><p class="eyebrow">GESTION DU CATALOGUE</p><h2 id="drawerTitle">Modifier le produit</h2><p id="drawerProductName" class="muted"></p></div><button type="button" id="closeDrawer" class="drawer-close" aria-label="Fermer">×</button></div>
+  <form id="editProductForm" class="drawer-form">
+    <input type="hidden" id="editProductId">
+    <label>Prix (FCFA)<input id="editPrice" type="number" min="0" step="1" required></label>
+    <label>Unité de vente<select id="editUnit" required><option value="kg">Kilogramme (kg)</option><option value="carton">Carton</option><option value="lot">Lot</option><option value="piece">Pièce</option></select></label>
+    <label>Stock disponible<input id="editStock" type="number" min="0" step="0.001" required></label>
+    <label>Statut du produit<select id="editActive" required><option value="true">Actif — visible en boutique</option><option value="false">Inactif — masqué de la boutique</option></select></label>
+    <p id="editProductMessage" class="message"></p>
+    <div class="drawer-actions"><button type="button" id="cancelDrawer" class="btn secondary">Annuler</button><button type="submit" id="saveEditBtn" class="btn">Enregistrer les modifications</button></div>
+  </form>
+</aside>
+<div id="toast" class="toast" role="status"></div>
+</body></html>
