@@ -132,8 +132,10 @@
     render(mapped);message.textContent=mapped.length ? "Les prix et disponibilités sont à confirmer avant validation de la commande." : "Aucun produit publié pour le moment. Ajoutez des produits depuis l'administration.";
   }
   document.querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-category]").forEach(x=>x.classList.remove("active"));b.classList.add("active");selectedCategory=b.dataset.category;loadProducts();}));
-  document.getElementById("menuToggle").addEventListener("click",()=>document.getElementById("mainNav").classList.toggle("open"));
-  document.querySelectorAll("#mainNav a").forEach(a=>a.addEventListener("click",()=>document.getElementById("mainNav").classList.remove("open")));
+  const menuToggle=document.getElementById("menuToggle"),mainNav=document.getElementById("mainNav");
+  const closeMenu=()=>{mainNav.classList.remove("open");menuToggle.setAttribute("aria-expanded","false");menuToggle.setAttribute("aria-label","Ouvrir le menu");};
+  menuToggle.addEventListener("click",()=>{const open=mainNav.classList.toggle("open");menuToggle.setAttribute("aria-expanded",String(open));menuToggle.setAttribute("aria-label",open?"Fermer le menu":"Ouvrir le menu");});
+  document.querySelectorAll("#mainNav a").forEach(a=>a.addEventListener("click",closeMenu));
   document.getElementById("year").textContent=new Date().getFullYear();
   const wa = String(cfg.WHATSAPP_NUMBER||"").replace(/\D/g,"");
   const phone = String(cfg.PHONE_NUMBER||"").trim();
